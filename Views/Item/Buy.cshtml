@@ -1,0 +1,75 @@
+﻿@model Melotrade.Models.Item
+
+@{
+    ViewData["Title"] = "Buy Item";
+}
+
+@{
+    var user = ViewBag.User as Melotrade.Models.ApplicationUser;
+}
+<img src="/images/melotradeLogo2.png" style="width:100px;" /> 
+<br /><br />
+<hr />
+<h5>Buyer Details</h5>
+<p>
+@user.fname @user.sname<br />
+@user.Email<br />
+@user.mobile
+</p>
+<hr />
+<h5>Purchasing Details</h5>
+<p>
+Purchasing: @Model.Name<br />
+Category: @Model.Category<br />
+Price: @Model.Price<br />
+Description: @Model.Description
+</p>
+<form asp-action="ProcessPayment" method="post" asp-route-itemId="@Model.Id">
+    <input type="hidden" name="itemId" value="@Model.Id" />
+
+    <div class="form-group">
+
+    <div class="mt-3">
+      
+            <input type="hidden" name="fname" id="fname" class="form-control" value="@user.fname" />
+    </div>
+        <div class="mt-3">
+      
+            <input type="hidden" name="sname" id="sname" class="form-control" value="@user.sname" />
+    </div>
+        <div class="mt-3">
+       
+            <input type="hidden" name="email" id="email" class="form-control" value="@user.Email" />
+    </div>
+
+        <div class="mt-3">
+     
+        <input type="hidden" name="hospitalid" value="0" />
+    </div>
+
+
+        <label for="price">Amount:</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">R</span>
+            </div>
+            <input type="number" name="price" id="price" class="form-control" value="@Model.Price" readonly />
+        </div>
+
+        <div class="mt-3">
+        <br />
+            <button type="submit" class="btn btn-dark mt-3">Proceed to Payment</button>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+        </div>
+
+</form>
+</div>
+
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}

@@ -1,0 +1,206 @@
+﻿@model Melotrade.Models.ItemCreateViewModel
+
+@{
+    ViewData["Title"] = "Add / Edit Item";
+    // var hasItem = Model.Id > 0;
+    var hasItem = Model != null && Model.Item.Id > 0;
+    var images = ViewBag.ExistingImages as List<Melotrade.Models.ItemImage>;
+    // var images = Model.ExistingImages;
+}
+
+<h2><img src="/images/melotradeLogo2.png" style="width:100px;" /> @ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Item.Id" />
+
+    <div class="form-group mt-3">
+        <label asp-for="Item.Name"></label>
+        <input asp-for="Item.Name" class="form-control" />
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Item.Category"></label>
+        <input asp-for="Item.Category" class="form-control" />
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Item.Description"></label>
+        <textarea asp-for="Item.Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Item.Price"></label>
+        <input asp-for="Item.Price" class="form-control" />
+    </div>
+
+    @if (hasItem)
+    {
+        <hr />
+        <h4>Uploaded Images</h4>
+        @if (images != null && images.Any())
+        {
+            <div class="row">
+                @foreach (var img in images)
+                {
+                    <div class="col-md-3 mb-2">
+                        <img src="@img.ImageUrl" class="img-thumbnail" style="width:100%;" />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No images uploaded yet.</p>
+        }
+
+        <div class="form-group mt-3">
+            <label>Add more images</label>
+            <input type="file" name="images" multiple class="form-control" />
+        </div>
+    }
+
+    <input type="hidden" name="active" value="Y" />
+
+    <button type="submit" class="btn btn-primary mt-3">@(hasItem ? "Add More Images" : "Add Item")</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</form>
+
+
+<br /><br /><br />
+<h2>Available Items</h2>
+@* <a asp-action="Create" class="btn btn-sm btn-primary">Create</a> *@
+
+<table class="table" id="myTable" style="width:120%;margin-left:-10%;">
+    <thead>
+        <tr>
+            <th style="width:30px;">Nr.</th>
+            <th style="width:60px;"><input type="text" id="myInput1" oninput="filterTable()" placeholder="Item Nr." class="tbodysearch" style="width:60px;"></th>
+            <th style="width:160px;"><input type="text" id="myInput2" oninput="filterTable()" placeholder="Name" class="tbodysearch" style="width:160px;"></th>
+            <th style="width:160px;"><input type="text" id="myInput3" oninput="filterTable()" placeholder="Category" class="tbodysearch" style="width:160px;"></th>
+            <th style="width:80px;"><input type="text" id="myInput4" oninput="filterTable()" placeholder="Price" class="tbodysearch" style="width:80px;"></th>
+            <th><input type="text" id="myInput5" oninput="filterTable()" placeholder="Description" class="tbodysearch" style="width:100%;"></th>
+
+            <th style="width:80px;">Save Item</th>
+
+            <th style="width:80px;">View Item</th>
+            <th style="width:80px;">Add Images</th>
+            <th style="width:80px;">Buy Item</th>
+            <th style="width:80px;">Item Sold</th>
+            <th style="width:80px;">Item Delete</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @{
+            int num = 0; // Initialize your counter outside the loop
+        }
+        @foreach (var item in Model.AvailableItems)
+        {
+            num++;
+            <tr>
+                <td>@num</td>
+                <form asp-action="UpdateInline" method="post">
+                    <input type="hidden" name="Id" value="@item.Id" />
+
+                <td>
+                    @item.ItemNr
+                </td>
+                <td>
+                        <span style="display:none;">@item.Name</span>
+                    <input type="text" name="Name" value="@item.Name" class="input_txt" />
+                </td>
+                <td>
+                    <span style="display:none;">@item.Category</span>
+                    <input type="text" name="Category" value="@item.Category" class="input_txt" />
+                </td>
+                <td>
+                    <span style="display:none;">@item.Price</span>
+                    <input type="number" step="0.01" name="Price" value="@item.Price" class="input_txt" />
+                </td>
+
+                <td>
+                    <span style="display:none;">@item.Description</span>
+                    <textarea name="Description" class="input_txt" rows="2">@item.Description</textarea></td>
+
+                <td><button type="submit" id="j" class="btn btn-sm btn-success" onclick="showTick(this)">Save Item</button>
+                    <script>
+                        function showTick(button) {
+                            // Optional: disable the button to prevent double-click
+                            button.disabled = false;
+
+                            // Replace text with a tick icon (Bootstrap or Unicode)
+                            button.innerHTML = '<i class="bi bi-check-lg"></i> Saving';
+                            location.hash = '#j';
+
+                        }
+
+                                                // Store scroll position before submit
+                        let scrollPosition = 0;
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const form = document.querySelector('form');
+                            form.addEventListener('submit', function() {
+                                scrollPosition = window.scrollY || window.pageYOffset;
+                            });
+
+                            // After page loads (including after postback), scroll to position
+                            window.onload = function() {
+                                if (scrollPosition) {
+                                    window.scrollTo(0, scrollPosition);
+                                }
+                            };
+                        });
+                    </script>
+                </td>
+
+                <td><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary" style="accent-color;">View Item</a></td>
+                <td><a asp-action="UploadImages" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Add Images</a></td>
+                <td>
+                    <a asp-controller="Item" asp-action="Buy" asp-route-id="@item.Id" class="btn btn-sm btn-dark">Buy Item</a>
+                </td>
+                <td>@(item.IsSold ? "Yes" : "No")</td>
+                </form>
+                <td>
+                    <form asp-controller="Item" asp-action="SoftDelete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Are you sure you want to deactivate this item?');">
+                        <button type="submit" class="btn btn-sm btn-warning">Delete Item</button>
+                    </form>
+                </td>
+                
+            </tr>
+        }
+
+
+
+        <script>
+            function filterTable() {
+              var table = document.getElementById("myTable");
+              var tr = table.getElementsByTagName("tr");
+
+              // Get all filter values
+              var filters = [];
+              for (var i = 1; i <= 5; i++) {
+                var input = document.getElementById("myInput" + i);
+                filters[i] = input ? input.value.toUpperCase() : "";
+              }
+
+              // Loop through all rows (skip header row at index 0)
+              for (var i = 1; i < tr.length; i++) {
+                var tds = tr[i].getElementsByTagName("td");
+                var showRow = true;
+
+                // Check each column against corresponding filter
+                for (var col = 1; col <= 5; col++) {
+                  if (filters[col] !== "" && tds[col]) {
+                    var txtValue = tds[col].textContent || tds[col].innerText;
+                    if (txtValue.toUpperCase().indexOf(filters[col]) === -1) {
+                      showRow = false;
+                      break;
+                    }
+                  }
+                }
+
+                // Skip header row (i=0) from being hidden
+                if (i > 0) {
+                  tr[i].style.display = showRow ? "" : "none";
+                }
+              }
+            }
+        </script>

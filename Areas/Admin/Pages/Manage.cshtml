@@ -1,0 +1,45 @@
+﻿@page
+@model Melotrade.Areas.Admin.Pages.ManageModel
+@* @model Admin.Pages.ManageModel *@
+@{
+    ViewData["Title"] = "User Management";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // or whatever your layout path is
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Access</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.fname</td>
+                <td>@user.sname</td>
+                <td>@user.Email</td>
+                <td>@(user.AccessControl == 1 ? "Yes" : "No")</td>
+                <td>
+                   @*  <a asp-page="/Admin/EditUser" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a> *@
+@*                     <a href="/Admin/EditUser?id=@user.Id" class="btn btn-primary btn-sm">Edit</a> *@
+                    <a href="/Identity/Account/Edit?id=@user.Id" class="btn btn-primary btn-sm">Edit</a>
+@*                     <a asp-area="Admin" asp-page="/EditUser" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a>
+                
+                    <a asp-area="Admin" asp-page="/EditUser" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a> *@
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>

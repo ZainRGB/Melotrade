@@ -1,0 +1,40 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Identity
+@using Melotrade.Models
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    var user = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
+    var isAdmin = user?.AccessControl == 1;
+}
+
+<div class="text-center">
+
+    
+        @if (SignInManager.IsSignedIn(User))
+        {
+          <h1 class="display-4">Welcome @user.fname @user.sname</h1>
+          <span class="login_icons">
+            <a class="nav-link" href="/Item/Index"><i class="bi bi-cart3"></i>Items</a>
+         </span>
+       }
+        else
+        {
+        <h1 class="display-4">Welcome </h1>
+        <span class="login_icons">
+            <a href="/Identity/Account/Login"><i class="bi bi-box-arrow-in-right"></i>Login</a>
+            <a href="/Identity/Account/Register"><i class="bi bi-person-add"></i>Register</a>
+        </span>
+        <h5>Please Log in</h5>
+        }
+
+    <br /><br /><img src="/images/melotradeLogo2.png" class="logo" />
+
+
+
+    <img src="/images/logotrans.png" class="logo_trans" />
+
+</div>

@@ -1,0 +1,12 @@
+﻿@model Melotrade.Models.Item
+
+<h2>Upload Images for @Model.Name</h2>
+
+<form asp-action="CreateWithImages" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <input type="file" name="images" multiple />
+    <button type="submit">Upload Images</button>
+</form>
+
+<a asp-action="Index">Go back to Item List</a>

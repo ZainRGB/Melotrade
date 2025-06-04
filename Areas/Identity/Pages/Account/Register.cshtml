@@ -1,0 +1,99 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1><img src="/images/melotradeLogo2.png" style="width:100px;" /> @ViewData["Title"]</h1>
+<span class="login_icons">
+    <a asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-up-fill"></i>Home</a>
+    <a href="/Identity/Account/Login"><i class="bi bi-box-arrow-in-right"></i>Login</a>
+</span>
+<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Create a new account</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.fname" class="form-control" autocomplete="fname" aria-required="true" placeholder="First Name" />
+                <label asp-for="Input.fname">First Name</label>
+                <span asp-validation-for="Input.fname" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.sname" class="form-control" autocomplete="sname" aria-required="true" placeholder="Surname" />
+                <label asp-for="Input.sname">Surname</label>
+                <span asp-validation-for="Input.sname" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.mobile" class="form-control" autocomplete="mobile" aria-required="true" placeholder="Mobile Nr." />
+                <label asp-for="Input.mobile">Mobile Nr.</label>
+                <span asp-validation-for="Input.mobile" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="Email Address" />
+                <label asp-for="Input.Email">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <textarea asp-for="Input.address" class="form-control" style="height:100px;" autocomplete="adress" aria-required="true" placeholder="Physical Address"></textarea>
+                <label asp-for="Input.address">Address</label>
+                <span asp-validation-for="Input.address" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Register for Melotrade</h3>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            Welcome to Melotrade.<br /> Please take a moment to register for an account. Completing all fields is essential to ensure a smooth and secure experience. We prioritize your security, and as such, all users will be <b>authenticated by their email address.</b> <br />This helps us verify your identity and protect your account.
+                            <br /><br />
+                            Once registered, you'll gain access to our comprehensive suite of tools and features designed to enhance your trading journey. We're committed to providing a reliable and user-friendly platform, and your accurate registration details are the first step in building that foundation.
+                            <br /><br />
+                            We look forward to welcoming you to the Melotrade community!
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

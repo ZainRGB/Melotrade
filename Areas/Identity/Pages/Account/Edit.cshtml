@@ -1,0 +1,49 @@
+﻿@page
+@model EditModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<h1><img src="/images/melotradeLogo2.png" style="width:100px;" /> Edit Profile</h1>
+
+
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Input.Id" />
+
+
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Fname" class="form-control" />
+        <label asp-for="Input.Fname">First Name</label>
+        <span asp-validation-for="Input.Fname" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Sname" class="form-control" />
+        <label asp-for="Input.Sname">Surname</label>
+        <span asp-validation-for="Input.Sname" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Email" class="form-control" readonly/>
+        <label asp-for="Input.Email">Email</label>
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating mb-3">
+        <select asp-for="Input.AccessControl" class="form-select">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+        <label asp-for="Input.AccessControl">Access Level</label>
+        <span asp-validation-for="Input.AccessControl" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

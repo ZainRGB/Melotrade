@@ -1,0 +1,65 @@
+﻿@model Melotrade.Models.Item
+@using Melotrade.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager 
+
+@{
+    var user = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
+    var isAdmin = user?.AccessControl == 1;
+}
+
+<h2>Upload Images for @Model.Name</h2>
+
+@if (Model.ItemImages != null && Model.ItemImages.Any())
+{
+    <div>
+        <h4>Existing Images:</h4>
+        @foreach (var img in Model.ItemImages)
+        {
+            <img src="@img.ImageUrl" alt="Image" style="max-width:150px; margin:5px;" />
+        }
+    </div>
+}
+
+<form asp-action="UploadImages" method="post" enctype="multipart/form-data" style="display:inline;">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="form-group">
+        <br />
+        <label>Select images to upload:</label><br />
+        <input type="file" name="images" class="form-control" onchange="readURL(this);" multiple />
+    </div>
+    <br />
+
+    <img id="blah" src="/images/180.png" alt="your image" style="max-width:300px;" />
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Upload Images</button>
+    
+</form>
+
+
+
+@if (isAdmin)
+{
+ @*    <a asp-action="Item/Create" class="btn btn-secondary">Back to Items List</a> *@
+    <a href="/Item/Create" class="btn btn-secondary">Back to Add/Edit Items</a>
+}
+else
+{
+       <a asp-action="Index" class="btn btn-secondary">Back to Items List</a>  
+}
+
+<script>
+    function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#blah')
+                        .attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+</script>

@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Melotrade.Models.Item>
+
+
+<h2><img src="/images/melotradeLogo2.png" style="width:100px;" /> Available Items</h2>
+
+<table class="table" id="myTable">
+    <thead>
+        <tr>
+            <th style="width:30px;">Nr.</th>
+            <th><input type="text" id="myInput1" oninput="filterTable()" placeholder="Name" class="tbodysearch"></th>
+            <th><input type="text" id="myInput2" oninput="filterTable()" placeholder="Category" class="tbodysearch"></th>
+            <th><input type="text" id="myInput3" oninput="filterTable()" placeholder="Price" class="tbodysearch"></th>
+            <th><input type="text" id="myInput4" oninput="filterTable()" placeholder="Description" class="tbodysearch"></th>
+            <th>Is Sold</th>
+            <th>View Item</th>
+            <th>Buy Item</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int num = 0; // Initialize your counter outside the loop
+        }
+        @foreach (var item in Model)
+        {
+            num++;
+            <tr>
+                <td>@num</td>
+                <td>@item.Name</td>
+                <td>@item.Category</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Description</td>
+                <td>@(item.IsSold ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">View Item</a>
+                </td>
+
+                <td>
+                    <a asp-controller="Item" asp-action="Buy" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Buy Now</a>
+                </td>
+            </tr>
+        }
+
+        <tr>
+            <td colspan="7">
+                <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<script>
+    function filterTable() {
+      var table = document.getElementById("myTable");
+      var tr = table.getElementsByTagName("tr");
+
+      // Get all filter values
+      var filters = [];
+      for (var i = 1; i <= 5; i++) {
+        var input = document.getElementById("myInput" + i);
+        filters[i] = input ? input.value.toUpperCase() : "";
+      }
+
+      // Loop through all rows (skip header row at index 0)
+      for (var i = 1; i < tr.length; i++) {
+        var tds = tr[i].getElementsByTagName("td");
+        var showRow = true;
+
+        // Check each column against corresponding filter
+        for (var col = 1; col <= 5; col++) {
+          if (filters[col] !== "" && tds[col]) {
+            var txtValue = tds[col].textContent || tds[col].innerText;
+            if (txtValue.toUpperCase().indexOf(filters[col]) === -1) {
+              showRow = false;
+              break;
+            }
+          }
+        }
+
+        // Skip header row (i=0) from being hidden
+        if (i > 0) {
+          tr[i].style.display = showRow ? "" : "none";
+        }
+      }
+    }
+</script>
